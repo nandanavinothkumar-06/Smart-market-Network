@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products Inventory - Smart Market</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #3498db;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --text: #2c3e50;
+            --text-light: #7f8c8d;
+            --border: #bdc3c7;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .user-info {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .user-info a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: opacity 0.3s;
+        }
+
+        .user-info a:hover {
+            opacity: 0.8;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            padding: 30px;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .product-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--success);
+            margin: 15px 0;
+        }
+
+        .product-info {
+            color: var(--text-light);
+            margin: 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0;
+            background: var(--light);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .quantity-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: var(--accent);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background 0.3s;
+        }
+
+        .quantity-btn:hover {
+            background: #2980b9;
+        }
+
+        .quantity-btn:disabled {
+            background: var(--border);
+            cursor: not-allowed;
+        }
+
+        .quantity-input {
+            width: 70px;
+            text-align: center;
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--success), #2ecc71);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .add-to-cart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .stock-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .stock-badge {
+            background: var(--light);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .stock-low {
+            background: #ffeaa7;
+            color: #e17055;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+            font-size: 1.2rem;
+        }
+
+        .error-message {
+            background: #ffeaa7;
+            color: #e17055;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .user-info {
+                position: static;
+                margin-top: 15px;
+                display: inline-block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛍️ Products Inventory</h1>
+            <div class="subtitle">Browse and add products to your cart</div>
+            <div class="user-info">
+                Welcome, <span id="username">Guest</span> | 
+                <a href="cart.html">View Cart (<span id="cartCount">0</span>)</a> |
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+
+        <div id="loadingMessage" class="loading">🔄 Loading products...</div>
+        <div id="errorMessage" class="error-message" style="display: none;">
+            ⚠️ Could not load products from server. Showing demo products instead.
+        </div>
+
+        <div class="products-grid" id="productsGrid"></div>
+    </div>
+
+    <script>
+        let products = [];
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function checkLogin() {
+            const userId = localStorage.getItem('userId') || localStorage.getItem('id');
+            const username = localStorage.getItem('username') || 'Guest';
+            if (!userId) {
+                alert('Please login first');
+                window.location.href = 'login.html';
+                return false;
+            }
+            document.getElementById('username').textContent = username;
+            return true;
+        }
+
+        // ✅ Fixed: Load products from correct API
+        async function loadProducts() {
+            const loadingMessage = document.getElementById('loadingMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const productsGrid = document.getElementById('productsGrid');
+
+            try {
+                console.log('🔍 Fetching from: /api/products/');
+                const response = await fetch('http://127.0.0.1:8080/api/products/', {
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                const data = await response.json();
+                products = Array.isArray(data) ? data : data.products || data.data || [];
+                if (!products.length) throw new Error('No products found');
+
+                loadingMessage.style.display = 'none';
+                errorMessage.style.display = 'none';
+                displayProducts();
+            } catch (err) {
+                console.error('❌ Error loading products:', err);
+                loadDemoProducts();
+                loadingMessage.style.display = 'none';
+                errorMessage.style.display = 'block';
+            }
+            updateCartCount();
+        }
+
+        function loadDemoProducts() {
+            products = [
+                { id: 1, name: "Basmati Rice", price: 167.64, quantity: 67, category: "Groceries" },
+                { id: 2, name: "Fresh Tomato", price: 121.02, quantity: 40, category: "Vegetables" },
+                { id: 3, name: "Pure Milk", price: 47.29, quantity: 72, category: "Dairy" },
+                { id: 4, name: "Farm Eggs", price: 6.57, quantity: 74, category: "Poultry" },
+                { id: 5, name: "Wheat Flour", price: 41.74, quantity: 99, category: "Groceries" },
+                { id: 6, name: "Crystal Sugar", price: 53.18, quantity: 39, category: "Groceries" },
+                { id: 7, name: "Premium Tea", price: 122.57, quantity: 56, category: "Beverages" },
+                { id: 8, name: "Arabica Coffee", price: 179.70, quantity: 55, category: "Beverages" }
+            ];
+            displayProducts();
+        }
+
+        function displayProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+            if (!products.length) {
+                grid.innerHTML = '<div class="loading">No products available</div>';
+                return;
+            }
+
+            products.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="product-name">${p.name}</div>
+                    <div class="product-price">₹${p.price.toFixed(2)}</div>
+                    <div class="product-info">📦 Category: ${p.category}</div>
+                    <div class="stock-info">
+                        <div class="product-info">Available Quantity</div>
+                        <div class="stock-badge ${p.quantity < 10 ? 'stock-low' : ''}">
+                            ${p.quantity} units
+                        </div>
+                    </div>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="decreaseQuantity(${p.id})">-</button>
+                        <input type="number" id="qty-${p.id}" class="quantity-input" value="1" min="1" max="${p.quantity}">
+                        <button class="quantity-btn" onclick="increaseQuantity(${p.id}, ${p.quantity})">+</button>
+                    </div>
+                    <button class="add-to-cart" onclick="addToCart(${p.id})">🛒 Add to Cart</button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function increaseQuantity(id, max) {
+            const input = document.getElementById(`qty-${id}`);
+            if (input.value < max) input.value++;
+        }
+
+        function decreaseQuantity(id) {
+            const input = document.getElementById(`qty-${id}`);
+            if (input.value > 1) input.value--;
+        }
+
+        function addToCart(id) {
+            const p = products.find(x => x.id === id);
+            const qty = parseInt(document.getElementById(`qty-${id}`).value);
+            if (!p) return alert('Product not found');
+            if (qty > p.quantity) return alert(`Only ${p.quantity} available`);
+
+            const i = cart.findIndex(x => x.id === id);
+            if (i > -1) cart[i].quantity += qty;
+            else cart.push({ ...p, quantity: qty });
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            alert(`✅ Added ${qty} ${p.name}(s) to cart!`);
+        }
+
+        function updateCartCount() {
+            const count = cart.reduce((t, i) => t + i.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Inventory page loaded');
+            if (checkLogin()) loadProducts();
+        });
+    </script>
+</body>
+</html>

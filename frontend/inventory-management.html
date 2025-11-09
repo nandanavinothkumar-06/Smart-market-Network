@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventory Management</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Inventory Management</h1>
+    
+    <div id="inventoryList">
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="inventoryTable">
+                <!-- Inventory will be loaded here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function loadInventory() {
+            const retailerId = localStorage.getItem('retailerId');
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api/retailer/${retailerId}/inventory`);
+                const products = await response.json();
+                
+                const table = document.getElementById('inventoryTable');
+                table.innerHTML = '';
+                
+                products.forEach(product => {
+                    const row = table.insertRow();
+                    row.innerHTML = `
+                        <td>${product.name}</td>
+                        <td><input type="number" value="${product.price}" id="price-${product.id}"></td>
+                        <td><input type="number" value="${product.quantity}" id="qty-${product.id}"></td>
+                        <td><input type="text" value="${product.category}" id="category-${product.id}"></td>
+                        <td>
+                            <button onclick="updateProduct(${product.id})">Update</button>
+                        </td>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error loading inventory:', error);
+            }
+        }
+
+        async function updateProduct(productId) {
+            const retailerId = localStorage.getItem('retailerId');
+            const productName = document.querySelector(`#inventoryTable tr:nth-child(${productId}) td:first-child`).textContent;
+            const newPrice = parseFloat(document.getElementById(`price-${productId}`).value);
+            const newQty = parseInt(document.getElementById(`qty-${productId}`).value);
+            const newCategory = document.getElementById(`category-${productId}`).value;
+
+            const updateData = {
+                retailer_id: parseInt(retailerId),
+                product_name: productName,
+                new_qty: newQty,
+                price: newPrice,
+                category: newCategory
+            };
+
+            try {
+                const response = await fetch('http://localhost:8080/api/retailer/inventory/update', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                if (response.ok) {
+                    alert('Inventory updated successfully!');
+                    loadInventory(); // Reload the inventory
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + error.detail);
+                }
+            } catch (error) {
+                console.error('Error updating inventory:', error);
+                alert('Failed to update inventory');
+            }
+        }
+
+        // Load inventory when page loads
+        document.addEventListener('DOMContentLoaded', loadInventory);
+    </script>
+</body>
+</html>

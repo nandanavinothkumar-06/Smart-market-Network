@@ -1,0 +1,85 @@
+/* 🌐 General layout */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 20px;
+}
+
+/* 📦 Container styling */
+.container {
+    max-width: 800px;
+    margin: auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* 🧾 Headings */
+h1, h2 {
+    text-align: center;
+    color: #cc0000;
+    margin-bottom: 20px;
+}
+
+/* 🧭 Form alignment */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 🟥 Bigger, stylish input boxes */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 360px;
+    padding: 14px 18px;
+    font-size: 18px;
+    border: 2px solid #cc0000;
+    border-radius: 6px;
+    background-color: #fff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 4px rgba(204, 0, 0, 0.2);
+    margin-bottom: 18px;
+}
+
+/* 🔍 Focus effect */
+input:focus {
+    border-color: #ff3333;
+    box-shadow: 0 0 8px rgba(255, 51, 51, 0.5);
+    outline: none;
+}
+
+/* 🖱️ Hover effect */
+input:hover {
+    box-shadow: 0 0 6px rgba(204, 0, 0, 0.4);
+}
+
+/* 🔘 Button styling */
+button {
+    width: 380px;
+    padding: 14px;
+    font-size: 18px;
+    background-color: #cc0000;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 12px;
+}
+
+button:hover {
+    background-color: #ff3333;
+}
+
+/* 💬 Message box */
+#message {
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #cc0000;
+}

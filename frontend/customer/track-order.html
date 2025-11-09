@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Order - Smart Market</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #2c3e50, #4ca1af);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+      text-align: center;
+      padding: 50px;
+    }
+    .card {
+      background: white;
+      color: #2c3e50;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    h1 { color: #27ae60; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>📦 Order Tracking</h1>
+    <p id="orderInfo">Loading order details...</p>
+  </div>
+
+  <script>
+    const orderId = window.location.pathname.split('/').pop(); // Extract ORD-JRCZQF0T
+    const orderInfo = document.getElementById('orderInfo');
+
+    async function loadOrder() {
+      try {
+        const res = await fetch(`http://127.0.0.1:8080/api/orders/track/${orderId}`);
+        if (!res.ok) throw new Error('Order not found');
+        const data = await res.json();
+
+        orderInfo.innerHTML = `
+          <strong>Order Number:</strong> ${data.order_number}<br>
+          <strong>Status:</strong> ${data.status}<br>
+          <strong>Total:</strong> ₹${data.total_price.toFixed(2)}<br>
+          <strong>Retailer:</strong> ${data.retailer_id}<br>
+          <strong>Date:</strong> ${new Date(data.order_date).toLocaleString()}<br>
+        `;
+      } catch (err) {
+        orderInfo.innerHTML = '❌ Order not found or failed to load.';
+      }
+    }
+
+    loadOrder();
+  </script>
+</body>
+</html>

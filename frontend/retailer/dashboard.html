@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Retailer Dashboard — Smart Market</title>
+
+  <!-- icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <style>
+    /* === Kept your look (single-column classic) + slight improvements === */
+    :root{
+      --bg-top:#2b4865; --bg-bottom:#1a2b3a;
+      --card-bg:#ffffff; --muted:#6b7280; --accent:#3a9bdc; --accent-2:#5bb3e8;
+      --success:#27ae60; --danger:#e53e3e; --glass:rgba(255,255,255,0.92);
+      --shadow: 0 8px 30px rgba(2,6,23,0.12);
+      --radius:8px;
+    }
+    html,body{height:100%;margin:0;font-family:"Segoe UI",system-ui,Arial;color:#0f172a}
+    body{
+      background: linear-gradient(180deg,var(--bg-top) 0%,var(--bg-bottom) 100%);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding: 18px 0;
+    }
+
+    /* header */
+    header{
+      background:var(--glass);
+      backdrop-filter: blur(6px);
+      padding:12px 22px;
+      margin: 0 auto;
+      width: min(1200px, 96%);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      box-shadow:var(--shadow);
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .logo {display:flex;gap:12px;align-items:center;font-weight:700;color:#10293b}
+    .logo i{color:var(--accent);font-size:1.2rem;background:rgba(58,155,220,0.08);padding:8px;border-radius:8px}
+    .logout-btn{background:var(--danger);color:white;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+
+    /* container single column */
+    .container { width: min(1200px, 96%); margin: 0 auto; }
+
+    /* stats row */
+    .stats-row { display:flex; gap:14px; margin-bottom:20px; flex-wrap:wrap; }
+    .stat { flex: 1 1 30%; background:var(--card-bg); border-radius:10px; padding:18px; box-shadow:var(--shadow); border:1px solid #e9eef3; }
+    .stat .title { color:var(--muted); font-size:0.95rem; display:flex;align-items:center; gap:8px; }
+    .stat .value { font-size:1.8rem; font-weight:700; color:#123; margin-top:8px; }
+
+    /* section card */
+    .section { background:var(--card-bg); border-radius:10px; padding:18px; margin-bottom:18px; box-shadow:var(--shadow); border:1px solid #eef2f7; }
+    .section .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    .section .title { font-weight:700; color:#123; display:flex; gap:8px; align-items:center; }
+    .small-muted { color:var(--muted); font-size:0.9rem; margin-top:6px; }
+
+    /* product form */
+    .form-grid { display:grid; grid-template-columns: 1fr 150px 120px 180px; gap:10px; align-items:center; }
+    .form-grid input { padding:8px 10px; border-radius:6px; border:1px solid #e6eef6; }
+    .btn-primary { background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#fff; border:none; padding:9px 12px; border-radius:8px; cursor:pointer; font-weight:700; }
+    .btn-ghost { background: transparent; border:1px solid #e6eef6; padding:8px 10px; border-radius:8px; cursor:pointer; }
+
+    /* table */
+    .table-wrap { overflow:auto; border-radius:8px; border:1px solid #edf2f7; }
+    table.data-table { width:100%; border-collapse:collapse; background:var(--card-bg); }
+    table.data-table th { background:#123; color:#fff; text-align:left; padding:12px; font-weight:700; }
+    table.data-table td { padding:12px; border-bottom:1px solid #eef2f7; font-size:0.95rem; }
+    .actions button { margin-right:6px; }
+
+    /* notifications */
+    .notification-item { display:flex; justify-content:space-between; align-items:center; background:#fbfdff; padding:10px 12px; border-radius:6px; border-left:4px solid var(--accent); margin-bottom:8px; }
+
+    /* insights / copilot */
+    .insights-list { list-style:none; padding-left:0; margin:0; }
+    .insights-list li { margin-bottom:8px; color:#102; }
+
+    .copilot { display:flex; flex-direction:column; gap:10px; }
+    .chat { background:#f8fafc; border-radius:8px; padding:12px; min-height:160px; max-height:320px; overflow:auto; border:1px solid #e6eef6; }
+    .chat .msg { display:inline-block; padding:8px 10px; border-radius:8px; margin-bottom:8px; max-width:80%; }
+    .msg.user { background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#fff; margin-left:auto; }
+    .msg.bot { background:#eef6ff; color:#072; }
+    .copilot-controls { display:flex; gap:8px; align-items:center; }
+
+    /* responsive */
+    @media (max-width:900px){
+      .form-grid { grid-template-columns: 1fr 1fr; }
+      .stats-row { flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ========== Header ========== -->
+  <header>
+    <div class="logo"><i class="fas fa-store"></i> Smart Market System — Retailer</div>
+    <div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- ========== Stats ========== -->
+    <div class="stats-row" aria-live="polite">
+      <div class="stat">
+        <div class="title"><i class="fas fa-box"></i> Total Products</div>
+        <div id="statTotalProducts" class="value">—</div>
+        <div class="small-muted" id="statUnits">---</div>
+      </div>
+
+      <div class="stat">
+        <div class="title"><i class="fas fa-shopping-cart"></i> Pending Orders</div>
+        <div id="statPendingOrders" class="value">—</div>
+        <div class="small-muted" id="statAccepted">---</div>
+      </div>
+
+      <div class="stat">
+        <div class="title"><i class="fas fa-chart-line"></i> Monthly Revenue</div>
+        <div id="statRevenue" class="value">₹—</div>
+        <div class="small-muted" id="statAvgPrice">---</div>
+      </div>
+    </div>
+
+    <!-- ========== Products ========== -->
+    <section class="section" id="productsSection">
+      <div class="header">
+        <div class="title"><i class="fas fa-boxes"></i> Your Products</div>
+        <div class="small-muted">Manage your inventory</div>
+      </div>
+
+      <form id="addProductForm" class="form-grid" onsubmit="handleAddProduct(event)">
+        <input id="p_name" placeholder="Product name" required />
+        <input id="p_price" type="number" min="0" step="0.01" placeholder="Price" required />
+        <input id="p_qty" type="number" min="0" placeholder="Qty" required />
+        <input id="p_cat" placeholder="Category" />
+        <div style="grid-column:1 / -1; display:flex; gap:8px; margin-top:8px;">
+          <button class="btn-primary" type="submit"><i class="fas fa-plus"></i> Add Product</button>
+          <button type="button" class="btn-ghost" onclick="loadDashboard(true)">Refresh (Try API)</button>
+        </div>
+      </form>
+
+      <div class="table-wrap" style="margin-top:12px;">
+        <table class="data-table" id="productTable" aria-live="polite">
+          <thead>
+            <tr><th>Name</th><th>Category</th><th>Price</th><th>Quantity</th><th>Actions</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========== Notifications ========== -->
+    <section class="section" id="notificationsSection">
+      <div class="header">
+        <div class="title"><i class="fas fa-bell"></i> Notifications</div>
+        <div class="small-muted">Recent activity</div>
+      </div>
+
+      <div style="margin-bottom:10px;">
+        <input id="notifFilter" placeholder="Filter by keyword" style="width:70%; padding:8px;border-radius:6px;border:1px solid #e6eef6" />
+        <button class="btn-ghost" onclick="filterNotifications()">Filter</button>
+      </div>
+
+      <div id="notificationsList">
+        <!-- notifications inserted here -->
+      </div>
+    </section>
+
+    <!-- ========== Smart Insights (between Notifications & Copilot) ========== -->
+    <section class="section" id="insightsSection">
+      <div class="header">
+        <div class="title"><i class="fas fa-brain"></i> Smart Insights</div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-ghost" onclick="generateInsights()">Refresh</button>
+        </div>
+      </div>
+
+      <div id="insightsContent" class="small-muted">Analyzing inventory…</div>
+    </section>
+
+    <!-- ========== Copilot Assistant ========== -->
+    <section class="section" id="copilotSection">
+      <div class="header">
+        <div class="title"><i class="fas fa-robot"></i> Retailer Copilot Assistant</div>
+        <div class="small-muted">Rule-based, remembers chat locally</div>
+      </div>
+
+      <div class="copilot">
+        <div class="chat" id="chatWindow" aria-live="polite"></div>
+
+        <div class="copilot-controls">
+          <input id="chatInput" placeholder="Ask about stock, orders, or a summary..." style="flex:1;padding:8px;border-radius:6px;border:1px solid #e6eef6" />
+          <button class="btn-primary" onclick="sendChat()">Ask</button>
+          <button class="btn-ghost" onclick="resetChat()">Clear</button>
+        </div>
+
+        <div style="margin-top:8px;">
+          <small class="small-muted">Quick: <a href="#" onclick="quickQuery('Store summary')">Store summary</a> · <a href="#" onclick="quickQuery('Low stock items')">Low stock</a> · <a href="#" onclick="quickQuery('Pending orders')">Pending orders</a></small>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== Orders (Manage & Approve) ========== -->
+    <section class="section" id="ordersSection">
+      <div class="header">
+        <div class="title"><i class="fas fa-clipboard-list"></i> Manage Orders</div>
+        <div class="small-muted">Approve, reject or ship orders</div>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <input id="orderFilter" placeholder="Filter by status (pending, accepted)" style="width:70%; padding:8px;border-radius:6px;border:1px solid #e6eef6" />
+        <button class="btn-ghost" onclick="filterOrders()">Filter</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table" id="ordersTable" aria-live="polite">
+          <thead>
+            <tr><th>ID</th><th>Product</th><th>Qty</th><th>Buyer</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- footer -->
+    <div style="height:18px"></div>
+    <footer style="text-align:center;color:#cbd5e1;padding:18px">© 2025 Smart Market System. All rights reserved.</footer>
+  </div>
+
+  <!-- ========== Script: behavior, API + demo fallback, insights, copilot ========== -->
+  <script>
+    /* ============ CONFIG =============
+       Change these if your backend differs.
+       - API_BASE: backend base url (port 8080 per your note)
+       - RETAILER_ID: current retailer id
+    */
+    const API_BASE = "http://127.0.0.1:8080/api"; // <--- change if needed
+    const RETAILER_ID = parseInt(localStorage.getItem('retailer_id') || '1', 10);
+    const CHAT_KEY = `copilot_history_retailer_${RETAILER_ID}`;
+
+    /* ============ DEMO DATA (fallback) ============ */
+    const demoProducts = [
+      { id: 101, name: "Organic Apples", price: 4.99, quantity: 25, category: "Fruits", retailer_id: 1 },
+      { id: 102, name: "Whole Wheat Bread", price: 3.49, quantity: 15, category: "Bakery", retailer_id: 1 },
+      { id: 103, name: "Rice", price: 68.00, quantity: 120, category: "Groceries", retailer_id: 1 },
+      { id: 104, name: "Wheat Flour", price: 50.00, quantity: 40, category: "Groceries", retailer_id: 1 },
+      { id: 105, name: "Coffee Powder", price: 210.00, quantity: 18, category: "Beverages", retailer_id: 1 }
+    ];
+
+    const demoOrders = [
+      { id: 201, product_id: 101, product_name: "Organic Apples", quantity: 2, customer_name: "John Doe", status: "Pending", total_price: 9.98, retailer_id: 1, order_date: (new Date()).toISOString() },
+      { id: 202, product_id: 102, product_name: "Whole Wheat Bread", quantity: 1, customer_name: "Jane Smith", status: "Accepted", total_price: 3.49, retailer_id: 1, order_date: (new Date(Date.now()-86400000)).toISOString() }
+    ];
+
+    const demoNotifications = [
+      { id: 1, text: "New order received for Organic Apples", time: "2 hours ago" },
+      { id: 2, text: "Low stock alert for Whole Wheat Bread", time: "1 day ago" }
+    ];
+
+    /* ============ APP STATE ============ */
+    let products = [];   // loaded from API or demo
+    let orders = [];     // loaded from API or demo
+    let notifications = []; // local notifications
+    let nextProductId = 1000;
+    let nextOrderId = 2000;
+
+    /* ============ UTIL HELPERS ============ */
+    function logout(){ localStorage.clear(); window.location.href = 'login.html'; }
+    function $ (sel) { return document.querySelector(sel); }
+    function $all(sel){ return Array.from(document.querySelectorAll(sel)); }
+    function safeJson(res){ return res.ok ? res.json().catch(()=>null) : null; }
+
+    /* ============ RENDERING ============ */
+    function renderProductsTable(){
+      const tbody = document.querySelector('#productTable tbody');
+      tbody.innerHTML = '';
+      if(!products.length) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center">No products</td></tr>';
+        return;
+      }
+      products.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${escapeHtml(p.name)}</td>
+          <td>${escapeHtml(p.category || '')}</td>
+          <td>₹${Number(p.price).toFixed(2)}</td>
+          <td>${p.quantity}</td>
+          <td class="actions">
+            <button class="btn-ghost" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i> Edit</button>
+            <button class="btn-ghost" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i> Delete</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderNotifications(){
+      const container = document.getElementById('notificationsList');
+      container.innerHTML = '';
+      if(!notifications.length){
+        container.innerHTML = '<div class="small-muted">No notifications</div>';
+        return;
+      }
+      notifications.forEach(n => {
+        const div = document.createElement('div');
+        div.className = 'notification-item';
+        div.innerHTML = `<div>${escapeHtml(n.text)}</div><div class="small-muted">${escapeHtml(n.time)}</div>`;
+        container.appendChild(div);
+      });
+    }
+
+    function renderOrdersTable(){
+      const tbody = document.querySelector('#ordersTable tbody');
+      tbody.innerHTML = '';
+      if(!orders.length){
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">No orders yet.</td></tr>';
+        return;
+      }
+      orders.forEach(o => {
+        const approveDisabled = o.status !== 'Pending' ? 'disabled' : '';
+        const actions = o.status === 'Pending'
+          ? `<button class="btn-approve" onclick="updateOrderStatus(${o.id},'Accepted')">Approve</button>
+             <button class="btn-reject" onclick="updateOrderStatus(${o.id},'Rejected')">Reject</button>`
+          : `<span class="small-muted">${escapeHtml(o.status)}</span>`;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>#ORD-${o.id}</td>
+          <td>${escapeHtml(o.product_name || '—')}</td>
+          <td>${escapeHtml(String(o.quantity || 1))}</td>
+          <td>${escapeHtml(o.customer_name || 'Customer')}</td>
+          <td>${escapeHtml(o.status || 'Pending')}</td>
+          <td>${actions}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    /* ============ INSIGHTS (rule-based) ============ */
+    function generateInsights(){
+      // rule-based analysis from current products/orders
+      if(!products.length){
+        document.getElementById('insightsContent').textContent = 'No inventory available.';
+        return;
+      }
+      const totalProducts = products.length;
+      const totalUnits = products.reduce((s,p)=>s+(p.quantity||0),0);
+      const avgPrice = (products.reduce((s,p)=>s+(Number(p.price)||0),0)/totalProducts).toFixed(2);
+      const lowStock = products.filter(p => (p.quantity||0) < 50).slice(0,5);
+      const topByQty = [...products].sort((a,b)=> (b.quantity||0) - (a.quantity||0))[0];
+      const categoryAgg = {};
+      products.forEach(p => categoryAgg[p.category || 'Other'] = (categoryAgg[p.category]||0) + (p.quantity||0));
+      const topCategory = Object.entries(categoryAgg).sort((a,b)=>b[1]-a[1])[0];
+
+      const pendingCount = orders.filter(o => /pending/i.test(o.status)).length;
+      const revenue = orders.reduce((s,o)=> s + (parseFloat(o.total_price)||0), 0);
+
+      const lines = [];
+      lines.push(`📦 ${totalProducts} SKUs | ${totalUnits} units in stock`);
+      lines.push(`💰 Avg price ₹${avgPrice} | Revenue ₹${revenue.toFixed(2)} (orders)`);
+      if(topByQty) lines.push(`🏆 Top SKU by stock: ${topByQty.name} (${topByQty.quantity})`);
+      if(topCategory) lines.push(`📚 Top category by units: ${topCategory[0]} (${topCategory[1]} units)`);
+      if(lowStock.length) lines.push(`⚠️ Low stock: ${lowStock.map(x=>x.name).join(', ')}`);
+      if(pendingCount > 0) lines.push(`🕒 Pending orders: ${pendingCount}`);
+
+      document.getElementById('insightsContent').innerHTML = lines.map(l => `<div>${escapeHtml(l)}</div>`).join('');
+    }
+
+    /* ============ COPILOT (local memory) ============ */
+    function appendChat(role, text, persist=true){
+      const win = document.getElementById('chatWindow');
+      const div = document.createElement('div');
+      div.className = 'msg ' + (role==='user' ? 'user' : 'bot');
+      div.innerHTML = escapeHtml(text);
+      win.appendChild(div);
+      win.scrollTop = win.scrollHeight;
+      if(persist){
+        const hist = JSON.parse(localStorage.getItem(CHAT_KEY) || '[]');
+        hist.push({role, text, ts: Date.now()});
+        localStorage.setItem(CHAT_KEY, JSON.stringify(hist.slice(-200)));
+      }
+    }
+    function loadChatHistory(){
+      const hist = JSON.parse(localStorage.getItem(CHAT_KEY) || '[]');
+      const win = document.getElementById('chatWindow');
+      win.innerHTML = '';
+      if(hist.length){
+        hist.forEach(m => {
+          const div = document.createElement('div');
+          div.className = 'msg ' + (m.role==='user' ? 'user' : 'bot');
+          div.innerHTML = escapeHtml(m.text);
+          win.appendChild(div);
+        });
+      } else {
+        appendChat('bot', "👋 Hello — I'm your Copilot. Try 'Store summary' or 'Low stock items'.", true);
+      }
+      win.scrollTop = win.scrollHeight;
+    }
+
+    function quickQuery(q){
+      document.getElementById('chatInput').value = q;
+      sendChat();
+    }
+
+    async function sendChat(){
+      const input = document.getElementById('chatInput');
+      const q = input.value.trim();
+      if(!q) return;
+      appendChat('user', q);
+      input.value = '';
+
+      // if mentions summary -> use local rule-based summary function
+      if(/summary|store summary|report/i.test(q)){
+        appendChat('bot', '⏳ Generating local summary...');
+        // try backend summary endpoint first (if present), else local summary
+        try {
+          const res = await fetch(`${API_BASE}/copilot/summary`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ retailer_id: RETAILER_ID })
+          });
+          if(res.ok){
+            const data = await res.json();
+            const summary = data.summary || data;
+            const suggestions = (data.suggestions || []).join('\n');
+            appendChat('bot', `${summary}\n\n${suggestions}`);
+            return;
+          }
+        } catch(e){
+          // ignore
+        }
+        // local fallback
+        const s = localSummary();
+        appendChat('bot', s);
+        return;
+      }
+
+      // other rule-based answers
+      const lower = q.toLowerCase();
+      if(lower.includes('low')){
+        const low = products.filter(p => (p.quantity||0) < 50).map(x => `${x.name} (${x.quantity})`).slice(0,6);
+        appendChat('bot', low.length ? `⚠️ Low stock: ${low.join(', ')}` : '✅ No low-stock items.');
+        return;
+      }
+      if(lower.includes('pending')){
+        const p = orders.filter(o => /pending/i.test(o.status));
+        appendChat('bot', `🕒 Pending orders: ${p.length}. Use the Approve/Reject buttons below.`);
+        return;
+      }
+      if(lower.includes('top') || lower.includes('best')){
+        const top = products.slice().sort((a,b)=> (b.quantity||0) - (a.quantity||0))[0];
+        appendChat('bot', top ? `🏆 Top by stock: ${top.name} (${top.quantity})` : 'No product data.');
+        return;
+      }
+
+      // default reply
+      appendChat('bot', "🤖 Try 'Store summary', 'Low stock items', 'Pending orders' or ask about a SKU.");
+    }
+
+    function localSummary(){
+      const total = products.length;
+      const units = products.reduce((s,p)=>s+(p.quantity||0),0);
+      const avg = total ? (products.reduce((s,p)=>s+(p.price||0),0)/total).toFixed(2) : '0.00';
+      const pending = orders.filter(o => /pending/i.test(o.status)).length;
+      const accepted = orders.filter(o => /accepted/i.test(o.status)).length;
+      const revenue = orders.reduce((s,o)=>s+(parseFloat(o.total_price)||0),0).toFixed(2);
+      const suggestions = [];
+      if(products.some(p => (p.quantity||0) < 50)) suggestions.push('Restock low inventory items (qty < 50).');
+      if(pending > 5) suggestions.push('High pending orders; speed up dispatch.');
+      return `📦 ${total} SKUs | ${units} units\n💰 Avg price ₹${avg} | Orders: ${pending} pending, ${accepted} accepted\nRevenue: ₹${revenue}\n\nSuggestions:\n- ${suggestions.join('\n- ') || 'Inventory looks stable.'}`;
+    }
+
+    function resetChat(){ localStorage.removeItem(CHAT_KEY); loadChatHistory(); }
+
+    /* ============ CRUD product handlers (local + API attempt) ============ */
+    function handleAddProduct(e){
+      e.preventDefault();
+      const name = document.getElementById('p_name').value.trim();
+      const price = parseFloat(document.getElementById('p_price').value) || 0;
+      const qty = parseInt(document.getElementById('p_qty').value) || 0;
+      const cat = document.getElementById('p_cat').value.trim();
+      const newProduct = { id: ++nextProductId, name, price, quantity: qty, category: cat, retailer_id: RETAILER_ID };
+      products.unshift(newProduct);
+      renderProductsTable();
+      generateInsights();
+      // attempt to send to backend (optional)
+      (async () => {
+        try {
+          const res = await fetch(`${API_BASE}/products/`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ name, price, quantity: qty, category: cat, retailer_id: RETAILER_ID })
+          });
+          if(res.ok) {
+            // ideally update id with persisted id
+            console.log('Product saved to backend');
+          }
+        } catch(e){ console.log('Backend product save failed (ok to ignore in demo).'); }
+      })();
+      // reset form
+      e.target.reset();
+    }
+
+    function editProduct(id){
+      const p = products.find(x => x.id === id);
+      if(!p) return alert('Product not found');
+      const newName = prompt('Edit product name', p.name);
+      if(newName === null) return;
+      const newQty = prompt('Edit quantity', p.quantity);
+      if(newQty === null) return;
+      p.name = newName.trim();
+      p.quantity = parseInt(newQty) || p.quantity;
+      renderProductsTable();
+      generateInsights();
+    }
+
+    function deleteProduct(id){
+      if(!confirm('Delete this product?')) return;
+      products = products.filter(x => x.id !== id);
+      renderProductsTable();
+      generateInsights();
+    }
+
+    /* ============ Orders: load + approve/update ============ */
+    async function updateOrderStatus(id, status){
+      // optimistic UI update
+      const o = orders.find(x => x.id === id);
+      if(o) o.status = status;
+      renderOrdersTable();
+      generateInsights();
+      appendChat('bot', `Order #${id} marked ${status}.`, true);
+
+      // attempt backend update (PUT)
+      try {
+        const res = await fetch(`${API_BASE}/orders/${id}`, {
+          method: 'PUT',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ status })
+        });
+        if(!res.ok) console.warn('Backend update failed for order', id);
+      } catch(e) {
+        console.warn('Could not reach backend to update order (ok for demo).');
+      }
+    }
+
+    /* ============ FILTERS ============ */
+    function filterNotifications(){
+      const q = document.getElementById('notifFilter').value.trim().toLowerCase();
+      const filtered = q ? notifications.filter(n => n.text.toLowerCase().includes(q)) : notifications;
+      const container = document.getElementById('notificationsList');
+      container.innerHTML = '';
+      if(!filtered.length) container.innerHTML = '<div class="small-muted">No notifications</div>';
+      filtered.forEach(n => {
+        const div = document.createElement('div');
+        div.className='notification-item';
+        div.innerHTML = `<div>${escapeHtml(n.text)}</div><div class="small-muted">${escapeHtml(n.time)}</div>`;
+        container.appendChild(div);
+      });
+    }
+
+    function filterOrders(){
+      const q = document.getElementById('orderFilter').value.trim().toLowerCase();
+      const filtered = q ? orders.filter(o => (o.status||'').toLowerCase().includes(q)) : orders;
+      const tbody = document.querySelector('#ordersTable tbody');
+      tbody.innerHTML = '';
+      if(!filtered.length) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">No orders</td></tr>';
+      filtered.forEach(o => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>#ORD-${o.id}</td><td>${escapeHtml(o.product_name)}</td><td>${o.quantity}</td><td>${escapeHtml(o.customer_name)}</td><td>${escapeHtml(o.status)}</td><td>${o.status==='Pending'?`<button class="btn-approve" onclick="updateOrderStatus(${o.id},'Accepted')">Approve</button><button class="btn-reject" onclick="updateOrderStatus(${o.id},'Rejected')">Reject</button>`:`<span class="small-muted">${escapeHtml(o.status)}</span>`}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    /* ============ LOAD from API with fallback demo ============ */
+    async function loadDashboard(tryApi = true){
+      // Reset arrays
+      products = [];
+      orders = [];
+      notifications = [];
+
+      // try load products
+      if(tryApi){
+        try {
+          const pr = await fetch(`${API_BASE}/products/retailer/${RETAILER_ID}`);
+          if(pr.ok){
+            const data = await pr.json();
+            // API might return array or { products: [...] }
+            products = Array.isArray(data) ? data : (data.products || data.data || []);
+          } else {
+            products = [];
+          }
+        } catch(e){ products = []; }
+      }
+      if(!products.length) products = demoProducts.slice();
+
+      // orders
+      if(tryApi){
+        try {
+          const od = await fetch(`${API_BASE}/orders/retailer/${RETAILER_ID}`);
+          if(od.ok){
+            const data = await od.json();
+            orders = Array.isArray(data) ? data : (data.orders || data.data || []);
+          } else orders = [];
+        } catch(e){ orders = []; }
+      }
+      if(!orders.length) orders = demoOrders.slice();
+
+      // notifications -- combine demo and any low-stock/pending
+      notifications = demoNotifications.slice();
+      const low = products.filter(p => (p.quantity||0) < 50).map(p => ({ id: 'low-'+p.id, text: `Low stock: ${p.name} (${p.quantity})`, time: 'just now' }));
+      const pend = orders.filter(o => /pending/i.test(o.status)).map(o => ({ id: 'ord-'+o.id, text: `Order #${o.id} pending: ${o.product_name}`, time: 'just now' }));
+      notifications = [...pend, ...low, ...notifications].slice(0,8);
+
+      // render everything
+      renderProductsTable();
+      renderOrdersTable();
+      renderNotifications();
+      generateInsights();
+      renderStats();
+    }
+
+    function renderStats(){
+      const totalProducts = products.length;
+      const totalUnits = products.reduce((s,p)=>s+(p.quantity||0),0);
+      const pending = orders.filter(o => /pending/i.test(o.status)).length;
+      const accepted = orders.filter(o => /accepted/i.test(o.status)).length;
+      const revenue = orders.reduce((s,o)=> s + (parseFloat(o.total_price)||0), 0);
+      const avgPrice = products.length ? (products.reduce((s,p)=>s+(p.price||0),0)/products.length).toFixed(2) : '—';
+
+      document.getElementById('statTotalProducts').textContent = totalProducts;
+      document.getElementById('statUnits').textContent = `${totalUnits} units in stock`;
+      document.getElementById('statPendingOrders').textContent = pending;
+      document.getElementById('statAccepted').textContent = `${accepted} accepted`;
+      document.getElementById('statRevenue').textContent = `₹${revenue.toFixed(2)}`;
+      document.getElementById('statAvgPrice').textContent = `Avg price ₹${avgPrice}`;
+    }
+
+    /* ============ small helpers ============ */
+    function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    /* ============ INIT ============ */
+    document.addEventListener('DOMContentLoaded', ()=> {
+      loadChatHistory();
+      loadDashboard(true);
+      // attempt to fetch from API after a short delay in case dev backend starts later
+      setTimeout(()=> loadDashboard(true), 1500);
+    });
+
+    // expose functions for console debugging
+    window.loadDashboard = loadDashboard;
+    window.updateOrderStatus = updateOrderStatus;
+    window.filterOrders = filterOrders;
+    window.filterNotifications = filterNotifications;
+    window.quickQuery = quickQuery;
+    window.resetChat = resetChat;
+
+  </script>
+</body>
+</html>

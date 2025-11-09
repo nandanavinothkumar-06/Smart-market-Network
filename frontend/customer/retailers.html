@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Retailers - Smart Market System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a3a5f;
+            --secondary: #2c5c7a;
+            --accent: #3a9bdc;
+            --accent-light: #5bb3e8;
+            --light: #f8fafc;
+            --text: #2d3748;
+            --text-light: #718096;
+            --success: #38b2ac;
+            --border: #e2e8f0;
+            --error: #e53e3e;
+            --warning: #ed8936;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://source.unsplash.com/1600x900/?shops,stores') no-repeat center center/cover;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .container {
+            background: var(--light);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            max-width: 800px;
+            width: 100%;
+            padding: 50px 40px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.8s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(to right, var(--accent), var(--success));
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-weight: 700;
+        }
+
+        .logo i {
+            color: var(--accent);
+            background: rgba(58, 155, 220, 0.1);
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 25%;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent), var(--success));
+            border-radius: 3px;
+        }
+
+        .city-info {
+            margin-bottom: 30px;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .city-info i {
+            color: var(--accent);
+        }
+
+        .retailers-container {
+            margin-bottom: 25px;
+            padding: 25px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            min-height: 300px;
+        }
+
+        .retailers-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .retailers-header h2 {
+            font-size: 1.4rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .retailers-header h2 i {
+            color: var(--accent);
+        }
+
+        .retailers-count {
+            background: var(--accent);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 12px 12px 45px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--light);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(58, 155, 220, 0.2);
+        }
+
+        .retailers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .retailer-card {
+            background: var(--light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .retailer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent);
+            background: white;
+        }
+
+        .retailer-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            background: rgba(58, 155, 220, 0.1);
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .retailer-info {
+            flex: 1;
+            width: 100%;
+        }
+
+        .retailer-name {
+            color: var(--text);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .retailer-details {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .retailer-rating {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .retailer-rating i {
+            color: var(--warning);
+        }
+
+        .retailer-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-open {
+            background: rgba(56, 178, 172, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(56, 178, 172, 0.3);
+        }
+
+        .status-closed {
+            background: rgba(229, 62, 62, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(229, 62, 62, 0.3);
+        }
+
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 0;
+            color: var(--text-light);
+        }
+
+        .loading i {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .loading p {
+            font-size: 1.1rem;
+        }
+
+        .error-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 0;
+            color: var(--error);
+        }
+
+        .error-message i {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .error-message p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .retry-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .retry-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+
+        .no-retailers {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 0;
+            color: var(--text-light);
+        }
+
+        .no-retailers i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .no-retailers p {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn {
+            background: rgba(113, 128, 150, 0.1);
+            color: var(--text-light);
+            border: 1px solid var(--border);
+        }
+
+        .back-btn:hover {
+            background: var(--text-light);
+            color: white;
+        }
+
+        .home-btn {
+            background: rgba(58, 155, 220, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(58, 155, 220, 0.3);
+        }
+
+        .home-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .footer-note {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .footer-note i {
+            color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 25px;
+                max-width: 95%;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .retailers-container {
+                padding: 20px;
+            }
+            
+            .retailers-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .retailers-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">
+            <i class="fas fa-store"></i>
+            <span>Smart Market System</span>
+        </div>
+        <h1>Available Retailers</h1>
+        
+        <div class="city-info">
+            <i class="fas fa-map-marker-alt"></i>
+            <span id="cityDisplay">Loading city...</span>
+        </div>
+
+        <div class="retailers-container">
+            <div class="retailers-header">
+                <h2><i class="fas fa-store-alt"></i> Select a Retailer</h2>
+                <div class="retailers-count" id="retailersCount">0 retailers</div>
+            </div>
+            
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search retailers...">
+            </div>
+            
+            <div id="retailersContent">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading retailers...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn back-btn" onclick="window.location.href='cities.html'">
+                <i class="fas fa-arrow-left"></i> Back to Cities
+            </button>
+            <button class="action-btn home-btn" onclick="window.location.href='login.html'">
+                <i class="fas fa-home"></i> Back to Home
+            </button>
+        </div>
+
+        <div class="footer-note">
+            <i class="far fa-copyright"></i>
+            <span>2025 Smart Market System. All rights reserved.</span>
+        </div>
+    </div>
+
+    <script>
+        // Get city from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const city = urlParams.get('city');
+        
+        // DOM elements
+        const cityDisplay = document.getElementById('cityDisplay');
+        const retailersContent = document.getElementById('retailersContent');
+        const retailersCount = document.getElementById('retailersCount');
+        const searchInput = document.getElementById('searchInput');
+        
+        let allRetailers = [];
+
+        // Display city name
+        if (city) {
+            cityDisplay.textContent = `Retailers in ${decodeURIComponent(city)}`;
+        } else {
+            cityDisplay.textContent = 'Unknown City';
+            window.location.href = 'cities.html';
+        }
+
+        // Fetch retailers from API
+        async function fetchRetailers() {
+            try {
+                // Show loading state
+                retailersContent.innerHTML = `
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading retailers in ${decodeURIComponent(city)}...</p>
+                    </div>
+                `;
+
+                const response = await fetch(`http://localhost:8080/customer/retailers/${encodeURIComponent(city)}`);
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to load retailers: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                allRetailers = data;
+                displayRetailers(allRetailers);
+                
+            } catch (error) {
+                console.error('Error fetching retailers:', error);
+                retailersContent.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Failed to load retailers. Please try again.</p>
+                        <button class="retry-btn" onclick="fetchRetailers()">
+                            <i class="fas fa-redo"></i> Retry
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Display retailers in a grid
+        function displayRetailers(retailers) {
+            if (!retailers || retailers.length === 0) {
+                retailersContent.innerHTML = `
+                    <div class="no-retailers">
+                        <i class="fas fa-store-slash"></i>
+                        <p>No retailers available in this city.</p>
+                        <p>Please check back later or try another city.</p>
+                    </div>
+                `;
+                retailersCount.textContent = '0 retailers';
+                return;
+            }
+
+            const retailersGrid = document.createElement('div');
+            retailersGrid.className = 'retailers-grid';
+            
+            retailers.forEach(retailer => {
+                const retailerCard = document.createElement('div');
+                retailerCard.className = 'retailer-card';
+                
+                // Generate random status and rating for demo purposes
+                const isOpen = Math.random() > 0.3; // 70% chance of being open
+                const rating = (Math.random() * 2 + 3).toFixed(1); // Random rating between 3.0 and 5.0
+                const ratingStars = Math.round(rating);
+                
+                retailerCard.innerHTML = `
+                    <div class="retailer-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <div class="retailer-info">
+                        <div class="retailer-name">${retailer.name}</div>
+                        <div class="retailer-details">
+                            <div><i class="fas fa-map-marker-alt"></i> ${decodeURIComponent(city)}</div>
+                            <div><i class="fas fa-clock"></i> ${isOpen ? 'Open Now' : 'Closed'}</div>
+                        </div>
+                        <div class="retailer-rating">
+                            <i class="fas fa-star"></i>
+                            <span>${rating}</span>
+                        </div>
+                    </div>
+                    <div class="retailer-status ${isOpen ? 'status-open' : 'status-closed'}">
+                        ${isOpen ? 'OPEN' : 'CLOSED'}
+                    </div>
+                `;
+                
+                retailerCard.addEventListener('click', () => {
+                    // Redirect to inventory page with retailer ID
+                    window.location.href = `inventory.html?retailerId=${encodeURIComponent(retailer.id)}&retailerName=${encodeURIComponent(retailer.name)}`;
+                });
+                
+                retailersGrid.appendChild(retailerCard);
+            });
+            
+            retailersContent.innerHTML = '';
+            retailersContent.appendChild(retailersGrid);
+            retailersCount.textContent = `${retailers.length} ${retailers.length === 1 ? 'retailer' : 'retailers'}`;
+        }
+
+        // Search functionality
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredRetailers = allRetailers.filter(retailer => 
+                retailer.name.toLowerCase().includes(searchTerm)
+            );
+            displayRetailers(filteredRetailers);
+        });
+
+        // Initial fetch
+        fetchRetailers();
+    </script>
+</body>
+
+</html>
+

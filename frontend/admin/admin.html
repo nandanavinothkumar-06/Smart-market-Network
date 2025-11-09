@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Smart Market System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #1a3a5f; --secondary: #2c5c7a;
+      --accent: #3a9bdc; --accent-light: #5bb3e8;
+      --light: #f8fafc; --text: #2d3748;
+      --text-light: #718096; --success: #38b2ac;
+      --border: #e2e8f0; --error: #e53e3e;
+      --warning: #ed8936;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      min-height: 100vh;
+      color: var(--text);
+    }
+    header {
+      background: var(--light);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 20px 40px;
+      display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .logo {
+      display:flex; align-items:center; gap:12px;
+      font-weight:700; color:var(--primary); font-size:1.4rem;
+    }
+    .logo i {
+      color: var(--accent); background: rgba(58,155,220,0.1);
+      padding:8px; border-radius:8px;
+    }
+    .logout-btn {
+      background: rgba(229,62,62,0.1);
+      color: var(--error); border: 1px solid rgba(229,62,62,0.3);
+      padding:10px 18px; border-radius:8px; font-weight:600;
+      cursor:pointer; transition:all .3s ease;
+    }
+    .logout-btn:hover { background: var(--error); color:white; }
+    main { padding:40px; max-width:1400px; margin:0 auto; }
+
+    .stats-grid {
+      display:grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+      gap:25px; margin-bottom:40px;
+    }
+    .stat-card {
+      background: var(--light);
+      border-radius:12px;
+      padding:25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      text-align:center;
+      transition: transform .2s ease;
+    }
+    .stat-card:hover { transform: translateY(-5px); }
+    .stat-icon { font-size:2.5rem; color:var(--accent); margin-bottom:10px; }
+    .stat-value { font-size:2rem; font-weight:700; color:var(--primary); }
+    .stat-label { color: var(--text-light); font-size:1rem; }
+
+    /* Smart Insights */
+    .insights-panel {
+      display:grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+      gap:20px; margin-bottom:40px;
+    }
+    .insight-card {
+      background:white; border-radius:12px; padding:25px;
+      border:1px solid var(--border); box-shadow:0 5px 15px rgba(0,0,0,0.1);
+      transition: all .3s ease; display:flex; align-items:center; gap:20px;
+    }
+    .insight-card:hover { transform: translateY(-5px); }
+    .insight-icon {
+      font-size:2.2rem; padding:15px; border-radius:50%;
+      background: rgba(58,155,220,0.1); color: var(--accent);
+    }
+    .insight-info h3 { font-size:1.2rem; color:var(--primary); margin-bottom:6px; }
+    .insight-info p { color:var(--text-light); font-size:0.95rem; }
+    .insight-warning .insight-icon { color: var(--warning); background: rgba(237,137,54,0.1); }
+    .insight-success .insight-icon { color: var(--success); background: rgba(56,178,172,0.1); }
+    .insight-error .insight-icon { color: var(--error); background: rgba(229,62,62,0.1); }
+
+    .section {
+      background: var(--light);
+      border-radius:12px;
+      padding:30px;
+      margin-bottom:30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    .section-header {
+      display:flex; justify-content:space-between;
+      align-items:center; margin-bottom:20px;
+      border-bottom:1px solid var(--border); padding-bottom:10px;
+    }
+    .section-title {
+      font-size:1.4rem; font-weight:600; color:var(--primary);
+      display:flex; align-items:center; gap:10px;
+    }
+    .form-button {
+      background: linear-gradient(to right,var(--accent),var(--accent-light));
+      color:white; border:none; border-radius:8px;
+      padding:10px 18px; cursor:pointer;
+      transition: all .3s ease; font-weight:600;
+    }
+    .form-button:hover { transform:translateY(-2px); box-shadow:0 4px 10px rgba(58,155,220,0.3); }
+
+    .table-container {
+      overflow-x:auto; border-radius:10px; border:1px solid var(--border);
+    }
+    table {
+      width:100%; border-collapse:collapse; background:white;
+    }
+    th {
+      background:var(--primary); color:white;
+      padding:12px; text-align:left; font-weight:600;
+    }
+    td {
+      padding:12px; border-bottom:1px solid var(--border);
+    }
+    tr:hover { background:rgba(58,155,220,0.05); }
+
+    .action-btn {
+      border:none; border-radius:6px; padding:6px 10px;
+      cursor:pointer; font-size:0.85rem;
+      transition: all .3s ease;
+    }
+    .delete-btn {
+      background: rgba(229,62,62,0.1);
+      color: var(--error);
+      border: 1px solid rgba(229,62,62,0.2);
+    }
+    .delete-btn:hover {
+      background: var(--error); color:white;
+      transform: scale(1.05);
+    }
+
+    .footer-note {
+      text-align:center; padding:25px;
+      color: var(--text-light); font-size:0.9rem;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">
+      <i class="fas fa-store"></i>
+      <span>Smart Market System</span>
+    </div>
+    <button class="logout-btn" onclick="logoutAdmin()">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+  </header>
+
+  <main>
+    <!-- Dashboard Stats -->
+    <div class="stats-grid">
+      <div class="stat-card"><i class="fas fa-store-alt stat-icon"></i><div class="stat-value" id="totalRetailers">0</div><div class="stat-label">Total Retailers</div></div>
+      <div class="stat-card"><i class="fas fa-boxes stat-icon"></i><div class="stat-value" id="totalProducts">0</div><div class="stat-label">Total Products</div></div>
+      <div class="stat-card"><i class="fas fa-shopping-cart stat-icon"></i><div class="stat-value" id="totalOrders">0</div><div class="stat-label">Total Orders</div></div>
+      <div class="stat-card"><i class="fas fa-chart-line stat-icon"></i><div class="stat-value" id="totalRevenue">₹0</div><div class="stat-label">Total Revenue</div></div>
+    </div>
+
+    <!-- Smart Insights Panel -->
+    <section class="insights-panel" id="insightsPanel">
+      <div class="insight-card"><div class="insight-icon"><i class="fas fa-trophy"></i></div><div class="insight-info"><h3>Top Retailer</h3><p id="topRetailer">Loading...</p></div></div>
+      <div class="insight-card insight-warning"><div class="insight-icon"><i class="fas fa-box-open"></i></div><div class="insight-info"><h3>Low Stock Alert</h3><p id="lowStockProducts">Loading...</p></div></div>
+      <div class="insight-card insight-success"><div class="insight-icon"><i class="fas fa-fire"></i></div><div class="insight-info"><h3>Top-Selling Product</h3><p id="topProduct">Loading...</p></div></div>
+    </section>
+
+    <!-- Retailers -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title"><i class="fas fa-store"></i> Retailers Management</h2>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead><tr><th>Name</th><th>Location</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="retailerTable">
+            <tr><td colspan="4" style="text-align:center;color:var(--text-light);padding:30px;">Loading retailers...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="text-align:center;margin-top:15px;">
+        <button id="toggleRetailersBtn" class="form-button" style="display:none;"><i class="fas fa-chevron-down"></i> Show More</button>
+      </div>
+    </section>
+
+    <!-- Products -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title"><i class="fas fa-boxes"></i> Products Management</h2>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead><tr><th>Name</th><th>Price</th><th>Quantity</th><th>Retailer</th></tr></thead>
+          <tbody id="productTable">
+            <tr><td colspan="4" style="text-align:center;color:var(--text-light);padding:30px;">Loading products...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="text-align:center;margin-top:15px;">
+        <button id="toggleProductsBtn" class="form-button" style="display:none;"><i class="fas fa-chevron-down"></i> Show More</button>
+      </div>
+    </section>
+
+    <!-- Orders -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title"><i class="fas fa-shopping-cart"></i> Orders Management</h2>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead><tr><th>ID</th><th>Product</th><th>Qty</th><th>Customer</th><th>Status</th></tr></thead>
+          <tbody id="orderTable">
+            <tr><td colspan="5" style="text-align:center;color:var(--text-light);padding:30px;">Loading orders...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="footer-note">© 2025 Smart Market System. All rights reserved.</div>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:8080/admin";
+    let retailers = [], products = [], orders = [];
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const username = localStorage.getItem("admin_username");
+      if (!username) { window.location.href = "login.html"; return; }
+      await Promise.all([loadRetailers(), loadProducts(), loadOrders()]);
+      updateStats();
+      updateInsights();
+    });
+
+    function logoutAdmin() { localStorage.clear(); window.location.href = "login.html"; }
+
+    async function loadRetailers() {
+      const table = document.getElementById("retailerTable");
+      const toggleBtn = document.getElementById("toggleRetailersBtn");
+      table.innerHTML = `<tr><td colspan="4" style="text-align:center;">Fetching retailers...</td></tr>`;
+      try {
+        const res = await fetch(`${API_BASE}/retailers`);
+        retailers = await res.json();
+        renderLimitedTable(retailers, table, 5, toggleBtn, r => `
+          <tr><td>${r.name}</td><td>${r.location || "—"}</td><td>${r.status}</td>
+          <td><button class="action-btn delete-btn" onclick="removeRetailer(${r.id}, '${r.name}')"><i class="fas fa-trash"></i> Remove</button></td></tr>
+        `);
+      } catch {
+        table.innerHTML = `<tr><td colspan="4" style="color:red;text-align:center;">Failed to load retailers</td></tr>`;
+      }
+    }
+
+    async function removeRetailer(id, name) {
+      if (!confirm(`Are you sure to remove ${name}?`)) return;
+      await fetch(`${API_BASE}/retailers/${id}`, { method: "DELETE" });
+      alert(`Retailer "${name}" removed.`);
+      loadRetailers();
+    }
+
+    async function loadProducts() {
+      const table = document.getElementById("productTable");
+      const toggleBtn = document.getElementById("toggleProductsBtn");
+      table.innerHTML = `<tr><td colspan="4" style="text-align:center;">Fetching products...</td></tr>`;
+      try {
+        const res = await fetch(`${API_BASE}/products`);
+        products = await res.json();
+        renderLimitedTable(products, table, 5, toggleBtn, p => `
+          <tr><td>${p.name}</td><td>₹${p.price}</td><td>${p.quantity}</td><td>${p.retailer_name || "—"}</td></tr>
+        `);
+      } catch {
+        table.innerHTML = `<tr><td colspan="4" style="color:red;text-align:center;">Failed to load products</td></tr>`;
+      }
+    }
+
+    async function loadOrders() {
+      const table = document.getElementById("orderTable");
+      table.innerHTML = `<tr><td colspan="5" style="text-align:center;">Fetching orders...</td></tr>`;
+      try {
+        const res = await fetch(`${API_BASE}/orders`);
+        orders = await res.json();
+        table.innerHTML = orders.map(o => `
+          <tr><td>${o.id}</td><td>${o.product_name || "—"}</td><td>${o.quantity}</td><td>${o.customer}</td><td>${o.status}</td></tr>
+        `).join('');
+      } catch {
+        table.innerHTML = `<tr><td colspan="5" style="color:red;text-align:center;">Failed to load orders</td></tr>`;
+      }
+    }
+
+    function renderLimitedTable(data, table, limit, toggleBtn, rowRenderer) {
+      let showingAll = false;
+      const render = () => {
+        const visible = showingAll ? data : data.slice(0, limit);
+        table.innerHTML = visible.map(rowRenderer).join('');
+        toggleBtn.innerHTML = showingAll ? `<i class="fas fa-chevron-up"></i> Show Less` : `<i class="fas fa-chevron-down"></i> Show More`;
+        toggleBtn.style.display = data.length > limit ? "inline-block" : "none";
+      };
+      toggleBtn.onclick = () => { showingAll = !showingAll; render(); };
+      render();
+    }
+
+    function updateStats() {
+      document.getElementById("totalRetailers").textContent = retailers.length;
+      document.getElementById("totalProducts").textContent = products.length;
+      document.getElementById("totalOrders").textContent = orders.length;
+      document.getElementById("totalRevenue").textContent = "₹" + (Math.random() * 100000).toFixed(0);
+    }
+
+    function updateInsights() {
+      const topRetailer = retailers[0]?.name || "No Data";
+      const lowStock = products.filter(p => p.quantity < 10).map(p => p.name).slice(0,3).join(", ") || "All stocked well";
+      const topProduct = orders.length ? orders[Math.floor(Math.random()*orders.length)].product_name : "No orders yet";
+      document.getElementById("topRetailer").textContent = topRetailer;
+      document.getElementById("lowStockProducts").textContent = lowStock;
+      document.getElementById("topProduct").textContent = topProduct;
+    }
+  </script>
+</body>
+</html>

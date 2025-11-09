@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shopping Cart - Smart Market</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #2c3e50; --secondary: #34495e;
+      --accent: #3498db; --success: #27ae60;
+      --warning: #f39c12; --light: #ecf0f1;
+      --text: #2c3e50; --text-light: #7f8c8d;
+      --border: #bdc3c7; --card-bg: #ffffff;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      font-weight: 300;
+    }
+
+    .cart-content { padding: 30px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+      background: var(--card-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    th {
+      background: var(--primary);
+      color: white;
+      padding: 20px 15px;
+      text-align: left;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 20px 15px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:hover { background: var(--light); }
+
+    .product-name { font-weight: 600; color: var(--primary); }
+    .product-price { color: var(--success); font-weight: 700; font-size: 1.1rem; }
+
+    .quantity-input {
+      width: 80px;
+      padding: 10px;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .remove-btn {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .remove-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 10px rgba(231, 76, 60, 0.3);
+    }
+
+    .grand-total {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--success);
+      text-align: right;
+    }
+
+    .address-section {
+      background: var(--light);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 30px 0;
+    }
+
+    .address-select {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .add-address-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    .new-address-form {
+      display: none;
+      margin-top: 15px;
+      background: var(--card-bg);
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .new-address-form input {
+      width: 100%;
+      margin: 5px 0;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+
+    .save-address-btn {
+      background: var(--success);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    .place-order-btn {
+      background: linear-gradient(135deg, var(--success), #2ecc71);
+      color: white;
+      border: none;
+      padding: 18px 40px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      font-weight: 700;
+      width: 100%;
+      transition: all 0.3s;
+      margin-top: 20px;
+    }
+
+    .place-order-btn:disabled {
+      background: var(--border);
+      cursor: not-allowed;
+    }
+
+    .back-link {
+      display: inline-block;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 20px;
+      border: 2px solid var(--accent);
+      border-radius: 6px;
+      transition: all 0.3s;
+    }
+
+    .back-link:hover { background: var(--accent); color: white; }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🛒 Shopping Cart</h1>
+    </div>
+
+    <div class="cart-content">
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Price (₹)</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="cartBody"></tbody>
+      </table>
+
+      <div class="grand-total" id="grandTotal">Grand Total: ₹0.00</div>
+
+      <div class="address-section">
+        <h3>🏠 Select or Add Address</h3>
+        <select id="addressSelect" class="address-select">
+          <option value="">Select an address</option>
+        </select>
+        <button class="add-address-btn" onclick="toggleAddressForm()">+ Add New Address</button>
+
+        <div class="new-address-form" id="newAddressForm">
+          <input type="text" id="addressLine1" placeholder="Address Line 1 *">
+          <input type="text" id="city" placeholder="City *">
+          <input type="text" id="state" placeholder="State *">
+          <input type="text" id="pincode" placeholder="Pincode *" maxlength="6">
+          <button class="save-address-btn" onclick="addNewAddress()">Save Address</button>
+        </div>
+      </div>
+
+      <button type="button" class="place-order-btn" id="placeOrderBtn" disabled>🚀 Place Order</button>
+
+      <br><a href="inventory.html" class="back-link">← Back to Inventory</a>
+    </div>
+  </div>
+
+  <script>
+    const cartBody = document.getElementById('cartBody');
+    const grandTotalEl = document.getElementById('grandTotal');
+    const placeOrderBtn = document.getElementById('placeOrderBtn');
+    const addressSelect = document.getElementById('addressSelect');
+    const addressForm = document.getElementById('newAddressForm');
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let userId = null;
+    let addresses = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      userId = localStorage.getItem('userId');
+      if (!userId) {
+        alert('Please login first');
+        window.location.href = 'login.html';
+        return;
+      }
+      renderCart();
+      await loadAddresses();
+    });
+
+    function renderCart() {
+      cartBody.innerHTML = '';
+      let grandTotal = 0;
+
+      if (cart.length === 0) {
+        cartBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Your cart is empty.</td></tr>';
+        placeOrderBtn.disabled = true;
+        grandTotalEl.textContent = 'Grand Total: ₹0.00';
+        return;
+      }
+
+      cart.forEach((item, i) => {
+        const total = item.price * item.quantity;
+        grandTotal += total;
+        cartBody.innerHTML += `
+          <tr>
+            <td>${item.product}</td>
+            <td>₹${item.price}</td>
+            <td><input type="number" value="${item.quantity}" min="1" data-index="${i}" class="quantity-input"></td>
+            <td>₹${total.toFixed(2)}</td>
+            <td><button class="remove-btn" data-index="${i}">Remove</button></td>
+          </tr>`;
+      });
+
+      grandTotalEl.textContent = `Grand Total: ₹${grandTotal.toFixed(2)}`;
+      placeOrderBtn.disabled = false;
+    }
+
+    // ✅ Remove and quantity update
+    cartBody.addEventListener('click', (e) => {
+      const btn = e.target.closest('.remove-btn');
+      if (btn) {
+        const index = btn.dataset.index;
+        cart.splice(index, 1);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        renderCart();
+      }
+    });
+
+    cartBody.addEventListener('change', (e) => {
+      if (e.target.classList.contains('quantity-input')) {
+        const index = e.target.dataset.index;
+        const newQty = parseInt(e.target.value);
+        if (isNaN(newQty) || newQty < 1) return alert('Quantity must be at least 1');
+        cart[index].quantity = newQty;
+        localStorage.setItem('cart', JSON.stringify(cart));
+        renderCart();
+      }
+    });
+
+    async function loadAddresses() {
+      const urls = [
+        `http://127.0.0.1:8080/api/addresses/user/${userId}`,
+        `http://127.0.0.1:8080/addresses/user/${userId}`,
+        `http://127.0.0.1:8080/customer/addresses/${userId}`
+      ];
+      for (const url of urls) {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) continue;
+          const data = await res.json();
+          addresses = data.addresses || data;
+          addressSelect.innerHTML = '<option value="">Select an address</option>' +
+            addresses.map(a => `<option value="${a.id}">${a.address_line1}, ${a.city}</option>`).join('');
+          return;
+        } catch {}
+      }
+    }
+
+    function toggleAddressForm() {
+      addressForm.style.display = addressForm.style.display === 'block' ? 'none' : 'block';
+    }
+
+    async function addNewAddress() {
+      const line1 = document.getElementById('addressLine1').value.trim();
+      const city = document.getElementById('city').value.trim();
+      const state = document.getElementById('state').value.trim();
+      const pincode = document.getElementById('pincode').value.trim();
+
+      if (!line1 || !city || !state || !pincode) return alert('Fill all fields');
+
+      const addressData = { user_id: parseInt(userId), address_line1: line1, city, state, pincode };
+
+      const endpoints = [
+        'http://127.0.0.1:8080/api/addresses/',
+        'http://127.0.0.1:8080/addresses/',
+        'http://127.0.0.1:8080/customer/addresses/'
+      ];
+
+      for (const url of endpoints) {
+        try {
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(addressData)
+          });
+          if (res.ok) {
+            alert('✅ Address added!');
+            addressForm.style.display = 'none';
+            await loadAddresses();
+            return;
+          }
+        } catch {}
+      }
+      alert('❌ Could not add address');
+    }
+
+    placeOrderBtn.addEventListener('click', async () => {
+  const selected = addressSelect.value;
+  if (!selected) return alert('Select a delivery address');
+
+  const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const timestamp = new Date().toLocaleString('en-IN', { hour12: true });
+  const addressText = addressSelect.options[addressSelect.selectedIndex].text;
+
+  // ✅ Construct the proper structured Telegram JSON
+  const telegramData = {
+    order_no: `ORD-${Math.random().toString(36).substring(2, 10).toUpperCase()}`,
+    customer_id: parseInt(userId),
+    retailer_id: cart[0]?.retailer_id || 1,
+    total: total.toFixed(2),
+    address: addressText,
+    status: "Placed",
+    time: timestamp,
+    items: cart.map(i => ({
+      name: i.product,
+      quantity: i.quantity,
+      subtotal: (i.price * i.quantity).toFixed(2)
+    }))
+  };
+
+  // ✅ Place the order in backend first
+  const orderEndpoints = [
+    'http://127.0.0.1:8080/api/orders/',
+    'http://127.0.0.1:8080/orders/',
+    'http://127.0.0.1:8080/customer/order/'
+  ];
+
+  for (const url of orderEndpoints) {
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customer_id: parseInt(userId),
+          address_id: parseInt(selected),
+          retailer_id: cart[0]?.retailer_id || 1,
+          order_items: cart.map(i => ({
+            product_id: i.id,
+            quantity: i.quantity,
+            price: i.price
+          }))
+        })
+      });
+
+      if (res.ok) {
+        // ✅ Send structured Telegram notification
+        await fetch('http://127.0.0.1:8080/telegram/notify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(telegramData)
+        });
+
+        alert(`✅ Order placed successfully! Total ₹${total.toFixed(2)}`);
+        localStorage.removeItem('cart');
+        setTimeout(() => window.location.href = 'inventory.html', 1000);
+        return;
+      }
+    } catch (err) {
+      console.error('❌ Order failed at', url, err);
+    }
+  }
+
+  alert('❌ Could not place order. Try again later.');
+});
+
+
+    // ✨ Helper function for Telegram message
+    async function sendTelegramNotification(userId, cart, total, addressText, timestamp) {
+      try {
+        const orderNumber = `ORD-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
+
+        const telegramData = {
+          order_no: orderNumber,
+          customer_id: parseInt(userId),
+          retailer_id: cart[0]?.retailer_id || 1,
+          total: total.toFixed(2),
+          address: addressText,
+          status: "Placed",
+          time: timestamp,
+          items: cart.map(p => ({
+            name: p.product,
+            quantity: p.quantity,
+            subtotal: (p.price * p.quantity).toFixed(2)
+          }))
+        };
+
+        await fetch('http://127.0.0.1:8080/telegram/notify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(telegramData)
+        });
+
+      } catch (err) {
+        console.error('⚠️ Telegram notification failed:', err);
+      }
+    }
+
+  </script>
+</body>
+</html>

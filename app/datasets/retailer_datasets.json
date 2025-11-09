@@ -1,0 +1,746 @@
+{
+    "chennai_retailer1": [
+        {
+            "name": "rice",
+            "price": 67.64,
+            "quantity": 87,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tomato",
+            "price": 21.02,
+            "quantity": 59,
+            "category": "Vegetables"
+        },
+        {
+            "name": "milk",
+            "price": 47.29,
+            "quantity": 80,
+            "category": "Dairy"
+        },
+        {
+            "name": "Eggs",
+            "price": 6.57,
+            "quantity": 74,
+            "category": "Poultry"
+        },
+        {
+            "name": "Wheat Flour",
+            "price": 41.74,
+            "quantity": 99,
+            "category": "Groceries"
+        },
+        {
+            "name": "Sugar",
+            "price": 53.18,
+            "quantity": 51,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tea",
+            "price": 122.57,
+            "quantity": 68,
+            "category": "beverages"
+        },
+        {
+            "name": "coffee",
+            "price": 179.7,
+            "quantity": 55,
+            "category": "beverages"
+        },
+        {
+            "name": "banana",
+            "price": 31.03,
+            "quantity": 58,
+            "category": "Fruits"
+        },
+        {
+            "name": "Onion",
+            "price": 28.48,
+            "quantity": 94,
+            "category": "Vegetables"
+        }
+    ],
+    "chennai_retailer2": [
+        {
+            "name": "rice",
+            "price": 63.98,
+            "quantity": 89,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tomato",
+            "price": 22.21,
+            "quantity": 64,
+            "category": "Vegetables"
+        },
+        {
+            "name": "milk",
+            "price": 55.49,
+            "quantity": 82,
+            "category": "Dairy"
+        },
+        {
+            "name": "Eggs",
+            "price": 5.52,
+            "quantity": 97,
+            "category": "Poultry"
+        },
+        {
+            "name": "Wheat Flour",
+            "price": 42.82,
+            "quantity": 68,
+            "category": "Groceries"
+        },
+        {
+            "name": "Sugar",
+            "price": 45.74,
+            "quantity": 82,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tea",
+            "price": 122.88,
+            "quantity": 53,
+            "category": "beverages"
+        },
+        {
+            "name": "coffee",
+            "price": 158.09,
+            "quantity": 97,
+            "category": "beverages"
+        },
+        {
+            "name": "banana",
+            "price": 31.14,
+            "quantity": 50,
+            "category": "Fruits"
+        },
+        {
+            "name": "Onion",
+            "price": 27.2,
+            "quantity": 96,
+            "category": "Vegetables"
+        }
+    ],
+    "chennai_retailer3": [
+        {
+            "name": "rice",
+            "price": 59.45,
+            "quantity": 75,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tomato",
+            "price": 21.97,
+            "quantity": 96,
+            "category": "Vegetables"
+        },
+        {
+            "name": "milk",
+            "price": 52.16,
+            "quantity": 84,
+            "category": "Dairy"
+        },
+        {
+            "name": "Eggs",
+            "price": 5.98,
+            "quantity": 62,
+            "category": "Poultry"
+        },
+        {
+            "name": "Wheat Flour",
+            "price": 40.88,
+            "quantity": 84,
+            "category": "Groceries"
+        },
+        {
+            "name": "Sugar",
+            "price": 50.78,
+            "quantity": 91,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tea",
+            "price": 115.79,
+            "quantity": 62,
+            "category": "beverages"
+        },
+        {
+            "name": "coffee",
+            "price": 167.6,
+            "quantity": 91,
+            "category": "beverages"
+        },
+        {
+            "name": "banana",
+            "price": 28.02,
+            "quantity": 64,
+            "category": "Fruits"
+        },
+        {
+            "name": "Onion",
+            "price": 26.26,
+            "quantity": 68,
+            "category": "Vegetables"
+        }
+    ],
+    "bangalore_retailer1": [
+        {
+            "name": "rice",
+            "price": 64.91,
+            "quantity": 90,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tomato",
+            "price": 20.41,
+            "quantity": 83,
+            "category": "Vegetables"
+        },
+        {
+            "name": "milk",
+            "price": 52.03,
+            "quantity": 90,
+            "category": "Dairy"
+        },
+        {
+            "name": "Eggs",
+            "price": 6.54,
+            "quantity": 89,
+            "category": "Poultry"
+        },
+        {
+            "name": "Wheat Flour",
+            "price": 44.96,
+            "quantity": 68,
+            "category": "Groceries"
+        },
+        {
+            "name": "Sugar",
+            "price": 43.22,
+            "quantity": 65,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tea",
+            "price": 113.22,
+            "quantity": 55,
+            "category": "beverages"
+        },
+        {
+            "name": "coffee",
+            "price": 137.44,
+            "quantity": 79,
+            "category": "beverages"
+        },
+        {
+            "name": "banana",
+            "price": 31.46,
+            "quantity": 73,
+            "category": "Fruits"
+        },
+        {
+            "name": "Onion",
+            "price": 27.43,
+            "quantity": 94,
+            "category": "Vegetables"
+        }
+    ],
+    "bangalore_retailer2": [
+        {
+            "name": "rice",
+            "price": 67.48,
+            "quantity": 51,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tomato",
+            "price": 19.9,
+            "quantity": 85,
+            "category": "Vegetables"
+        },
+        {
+            "name": "milk",
+            "price": 52.15,
+            "quantity": 93,
+            "category": "Dairy"
+        },
+        {
+            "name": "Eggs",
+            "price": 7.17,
+            "quantity": 52,
+            "category": "Poultry"
+        },
+        {
+            "name": "Wheat Flour",
+            "price": 36.8,
+            "quantity": 59,
+            "category": "Groceries"
+        },
+        {
+            "name": "Sugar",
+            "price": 43.9,
+            "quantity": 83,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tea",
+            "price": 118.11,
+            "quantity": 95,
+            "category": "beverages"
+        },
+        {
+            "name": "coffee",
+            "price": 136.6,
+            "quantity": 93,
+            "category": "beverages"
+        },
+        {
+            "name": "banana",
+            "price": 34.68,
+            "quantity": 91,
+            "category": "Fruits"
+        },
+        {
+            "name": "Onion",
+            "price": 24.48,
+            "quantity": 66,
+            "category": "Vegetables"
+        }
+    ],
+    "bangalore_retailer3": [
+        {
+            "name": "rice",
+            "price": 58.2,
+            "quantity": 78,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tomato",
+            "price": 21.03,
+            "quantity": 74,
+            "category": "Vegetables"
+        },
+        {
+            "name": "milk",
+            "price": 53.37,
+            "quantity": 87,
+            "category": "Dairy"
+        },
+        {
+            "name": "Eggs",
+            "price": 6.95,
+            "quantity": 89,
+            "category": "Poultry"
+        },
+        {
+            "name": "Wheat Flour",
+            "price": 36.55,
+            "quantity": 53,
+            "category": "Groceries"
+        },
+        {
+            "name": "Sugar",
+            "price": 53.46,
+            "quantity": 98,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tea",
+            "price": 115.17,
+            "quantity": 58,
+            "category": "beverages"
+        },
+        {
+            "name": "coffee",
+            "price": 167.2,
+            "quantity": 86,
+            "category": "beverages"
+        },
+        {
+            "name": "banana",
+            "price": 28.32,
+            "quantity": 52,
+            "category": "Fruits"
+        },
+        {
+            "name": "Onion",
+            "price": 25.49,
+            "quantity": 91,
+            "category": "Vegetables"
+        }
+    ],
+    "hyderabad_retailer1": [
+        {
+            "name": "rice",
+            "price": 64.52,
+            "quantity": 57,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tomato",
+            "price": 23.73,
+            "quantity": 81,
+            "category": "Vegetables"
+        },
+        {
+            "name": "milk",
+            "price": 58.71,
+            "quantity": 54,
+            "category": "Dairy"
+        },
+        {
+            "name": "Eggs",
+            "price": 6.42,
+            "quantity": 51,
+            "category": "Poultry"
+        },
+        {
+            "name": "Wheat Flour",
+            "price": 42.45,
+            "quantity": 98,
+            "category": "Groceries"
+        },
+        {
+            "name": "Sugar",
+            "price": 53.76,
+            "quantity": 90,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tea",
+            "price": 131.24,
+            "quantity": 85,
+            "category": "beverages"
+        },
+        {
+            "name": "coffee",
+            "price": 158.27,
+            "quantity": 79,
+            "category": "beverages"
+        },
+        {
+            "name": "banana",
+            "price": 32.32,
+            "quantity": 56,
+            "category": "Fruits"
+        },
+        {
+            "name": "Onion",
+            "price": 28.25,
+            "quantity": 51,
+            "category": "Vegetables"
+        }
+    ],
+    "hyderabad_retailer2": [
+        {
+            "name": "rice",
+            "price": 59.05,
+            "quantity": 98,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tomato",
+            "price": 18.13,
+            "quantity": 92,
+            "category": "Vegetables"
+        },
+        {
+            "name": "milk",
+            "price": 49.35,
+            "quantity": 70,
+            "category": "Dairy"
+        },
+        {
+            "name": "Eggs",
+            "price": 6.72,
+            "quantity": 94,
+            "category": "Poultry"
+        },
+        {
+            "name": "Wheat Flour",
+            "price": 45.41,
+            "quantity": 72,
+            "category": "Groceries"
+        },
+        {
+            "name": "Sugar",
+            "price": 41.18,
+            "quantity": 54,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tea",
+            "price": 137.57,
+            "quantity": 50,
+            "category": "beverages"
+        },
+        {
+            "name": "coffee",
+            "price": 145.89,
+            "quantity": 92,
+            "category": "beverages"
+        },
+        {
+            "name": "banana",
+            "price": 33.93,
+            "quantity": 52,
+            "category": "Fruits"
+        },
+        {
+            "name": "Onion",
+            "price": 25.14,
+            "quantity": 100,
+            "category": "Vegetables"
+        }
+    ],
+    "hyderabad_retailer3": [
+        {
+            "name": "rice",
+            "price": 66.43,
+            "quantity": 93,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tomato",
+            "price": 21.42,
+            "quantity": 59,
+            "category": "Vegetables"
+        },
+        {
+            "name": "milk",
+            "price": 56.16,
+            "quantity": 58,
+            "category": "Dairy"
+        },
+        {
+            "name": "Eggs",
+            "price": 6.3,
+            "quantity": 93,
+            "category": "Poultry"
+        },
+        {
+            "name": "Wheat Flour",
+            "price": 40.57,
+            "quantity": 98,
+            "category": "Groceries"
+        },
+        {
+            "name": "Sugar",
+            "price": 46.88,
+            "quantity": 66,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tea",
+            "price": 139.48,
+            "quantity": 83,
+            "category": "beverages"
+        },
+        {
+            "name": "coffee",
+            "price": 141.26,
+            "quantity": 61,
+            "category": "beverages"
+        },
+        {
+            "name": "banana",
+            "price": 30.24,
+            "quantity": 68,
+            "category": "Fruits"
+        },
+        {
+            "name": "Onion",
+            "price": 25.97,
+            "quantity": 57,
+            "category": "Vegetables"
+        }
+    ],
+    "mumbai_retailer1": [
+        {
+            "name": "rice",
+            "price": 63.14,
+            "quantity": 80,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tomato",
+            "price": 19.89,
+            "quantity": 81,
+            "category": "Vegetables"
+        },
+        {
+            "name": "milk",
+            "price": 58.87,
+            "quantity": 72,
+            "category": "Dairy"
+        },
+        {
+            "name": "Eggs",
+            "price": 6.36,
+            "quantity": 63,
+            "category": "Poultry"
+        },
+        {
+            "name": "Wheat Flour",
+            "price": 46.88,
+            "quantity": 84,
+            "category": "Groceries"
+        },
+        {
+            "name": "Sugar",
+            "price": 46.54,
+            "quantity": 76,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tea",
+            "price": 127.42,
+            "quantity": 85,
+            "category": "beverages"
+        },
+        {
+            "name": "coffee",
+            "price": 168.02,
+            "quantity": 65,
+            "category": "beverages"
+        },
+        {
+            "name": "banana",
+            "price": 32.78,
+            "quantity": 95,
+            "category": "Fruits"
+        },
+        {
+            "name": "Onion",
+            "price": 26.43,
+            "quantity": 87,
+            "category": "Vegetables"
+        }
+    ],
+    "mumbai_retailer2": [
+        {
+            "name": "rice",
+            "price": 55.8,
+            "quantity": 74,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tomato",
+            "price": 20.27,
+            "quantity": 54,
+            "category": "Vegetables"
+        },
+        {
+            "name": "milk",
+            "price": 59.24,
+            "quantity": 63,
+            "category": "Dairy"
+        },
+        {
+            "name": "Eggs",
+            "price": 5.59,
+            "quantity": 52,
+            "category": "Poultry"
+        },
+        {
+            "name": "Wheat Flour",
+            "price": 36.83,
+            "quantity": 55,
+            "category": "Groceries"
+        },
+        {
+            "name": "Sugar",
+            "price": 42.19,
+            "quantity": 82,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tea",
+            "price": 123.24,
+            "quantity": 98,
+            "category": "beverages"
+        },
+        {
+            "name": "coffee",
+            "price": 147.3,
+            "quantity": 93,
+            "category": "beverages"
+        },
+        {
+            "name": "banana",
+            "price": 29.24,
+            "quantity": 53,
+            "category": "Fruits"
+        },
+        {
+            "name": "Onion",
+            "price": 29.97,
+            "quantity": 53,
+            "category": "Vegetables"
+        }
+    ],
+    "mumbai_retailer3": [
+        {
+            "name": "rice",
+            "price": 66.95,
+            "quantity": 51,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tomato",
+            "price": 21.62,
+            "quantity": 71,
+            "category": "Vegetables"
+        },
+        {
+            "name": "milk",
+            "price": 59.95,
+            "quantity": 82,
+            "category": "Dairy"
+        },
+        {
+            "name": "Eggs",
+            "price": 6.75,
+            "quantity": 90,
+            "category": "Poultry"
+        },
+        {
+            "name": "Wheat Flour",
+            "price": 47.56,
+            "quantity": 91,
+            "category": "Groceries"
+        },
+        {
+            "name": "Sugar",
+            "price": 53.05,
+            "quantity": 67,
+            "category": "Groceries"
+        },
+        {
+            "name": "Tea",
+            "price": 130.13,
+            "quantity": 81,
+            "category": "beverages"
+        },
+        {
+            "name": "coffee",
+            "price": 178.83,
+            "quantity": 87,
+            "category": "beverages"
+        },
+        {
+            "name": "banana",
+            "price": 27.41,
+            "quantity": 50,
+            "category": "Fruits"
+        },
+        {
+            "name": "Onion",
+            "price": 24.46,
+            "quantity": 83,
+            "category": "Vegetables"
+        }
+    ]
+}

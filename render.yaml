@@ -1,0 +1,15 @@
+# Render service definition for the backend (simple example).
+# Edit values (service name and env vars) before applying in Render.
+services:
+  - type: web
+    name: smart-market-network-backend
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: CORS_ORIGINS
+        value: "https://your-site.netlify.app"
+      # If you want to use Postgres on Render, set DATABASE_URL to your DB's URL here.
+      # - key: DATABASE_URL
+      #   value: "postgres://user:pass@host:5432/dbname"

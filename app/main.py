@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import engine, SessionLocal
 from app import models
 import requests
+import os
 
 
 # ------------------------------------------------------------
@@ -11,12 +12,20 @@ import requests
 app = FastAPI(title="Smart Market Network API")
 
 # ------------------------------------------------------------
-# CORS Configuration
+# CORS Configuration (read allowed origins from environment for production)
+# Set environment variable CORS_ORIGINS as a comma-separated list of allowed origins.
+# Example: CORS_ORIGINS=https://your-netlify-site.netlify.app,https://app.example.com
 # ------------------------------------------------------------
-origins = [
+default_origins = [
     "http://127.0.0.1:5500",
     "http://localhost:5500",
 ]
+
+cors_env = os.getenv("CORS_ORIGINS", "")
+if cors_env:
+    origins = [o.strip() for o in cors_env.split(",") if o.strip()]
+else:
+    origins = default_origins
 
 app.add_middleware(
     CORSMiddleware,
